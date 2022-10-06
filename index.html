@@ -1,300 +1,453 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
-<center>
-<head>
-  <style type="text/css" media="screen">
-    body {background-color: lightGray;}
-    h1 {color: black;}
-    p {color: red;}
-  </style>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> DESAFIO#2 </title>
-  <script src='https://cdn.plot.ly/plotly-2.14.0.min.js'></script>
-</head>
+  <center>
+  <head>
+    <style type="text/css" media="screen">
+      body {background-color: lightGray;}
+      h1 {color: black;}
+      p {color: red;}
+    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> DESAFIO#2 </title>
+    <script src='https://cdn.plot.ly/plotly-2.14.0.min.js'></script>
+  </head>
 
-<body>
-  <script src="https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
-  <h1 class="text-center mt-5"> SISTEMA DE ECUACIONES </h1>
-  <div>
+  <body>
+    <script src="https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
+    <h1 class="text-center mt-5"><FONT FACE="courier new"> SISTEMA DE ECUACIONES </FONT></h1>
     <div>
-      <div class="servicios">
+      <div>
+        <div class="servicios">
+          <div>
+            <label for=""> <FONT FACE="courier new"> Numero de Incognitas </FONT></label>
+            <input id="filas" type="text" placeholder="Numero de filas"><br>
+          </div>
+        </div>
         <div>
-          <label for=""> Numero de Incognitas </label>
-          <input id="filas" type="text" placeholder="Numero de filas"><br>
+          <button class="btn btn-primary mt-3" onclick="crearsistemas()"> Crear Sistema </button>
+          <style>
+            button {
+                font-weight: bold;
+                cursor: pointer;
+                padding: 5px;
+                margin: 0 10px 20px 0;
+                border: 1px solid 'black';
+                background: #D9F2F2;
+                border-radius: 8px 8px 8px 8px;
+            }
+            button:hover {
+                background: #ddd;
+            }
+
+            select {
+                cursor: pointer;
+                display: inline-block;
+                position: relative;
+                font: normal 13px/23px courier, Sans-Serif;
+                color: black;
+                border: 1px solid #ccc;
+              }
+
+              styledSelect {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                background-color: honeydew;
+                padding: 0 10px;
+                font-weight: bold;
+              }
+
+              styledSelect:after {
+                content: "";
+                width: 600;
+                height: 600;
+                border: 5px solid transparent;
+                border-color: black transparent transparent transparent;
+                position: absolute;
+                top: 9px;
+                right: 6px;
+              }
+
+              styledSelect:active,
+              styledSelect.active {
+                background-color: #eee;
+              }
+
+              options {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                left: 0;
+                z-index: 999;
+                margin: 0 0;
+                padding: 0 0;
+                list-style: none;
+                border: 1px solid #ccc;
+                background-color: white;
+                -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+                -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+              }
+
+              options li {
+                padding: 0 6px;
+                margin: 0 0;
+                padding: 0 10px;
+              }
+
+              options li:hover {
+                background-color: #39f;
+                color: white;
+              }
+          </style>
         </div>
       </div>
-      <div>
-        <button class="btn btn-primary mt-3" onclick="crearsistemas()"> Crear Sistema </button>
-      </div>
     </div>
-  </div>
-</center>
+  </center>
 
-  <script type="text/javascript">
+    <script type="text/javascript">
 
-    function crearsistemas() {
-      document.getElementById("sistema").innerHTML = "";
-      for (var i = 0; i < filas.value; i++) {
-        for (var j = 0; j < filas.value; j++) {
-          document.getElementById("sistema").innerHTML += "<input id='" + i + j + "' name='dato[]' class='datos' type='text' placeholder='a " + i + j + "'>";
-        }
-        document.getElementById("sistema").innerHTML += "<input id='" + i + "' name='datob[]' class='datosb mx-5' type='text' placeholder='b " + i + "'>";
-        document.getElementById("sistema").innerHTML += "<br>";
-      }
-      document.getElementById("sistema").innerHTML += '<select id="select1" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"">' +
-        '<option selected>Selecccionar el metodo de resolucion</option>' +
-        '<option value="1">JACOBI</option>' +
-        '<option value="2">GAUSS SEIDEL</option>' +
-        '</select> <br>';
-
-      document.getElementById("sistema").innerHTML += "<input id='tole'  type='text' placeholder='Tolerancia'><br>";
-
-      document.getElementById("sistema").innerHTML += '<button class="btn btn-primary mt-3" onclick="solucionarsistemas()">Solucionar Sistema</button>';
-    }
-
-    function solucionarsistemas() {
-      document.getElementById("resolucionsistema").innerHTML = "";
-      const $select = document.querySelector("#select1").value;
-      matrixa = matriz();
-      matrixb = matrizb();
-
-      if (filas.value == 3) {
-        variabley1 = matrixa[0][1];
-        variablez1 = matrixa[0][2];
-        variableb1 = matrixb[0][0];
-      }
-
-      tol = tole.value;
-
-      switch ($select) {
-        case "1":
-          jacobi(matrixa, matrixb, tol);
-          if (filas.value == 3) {
-            graficar(variabley1, variablez1, variableb1);
-          }
-          break;
-        case "2":
-          seidel(matrixa, matrixb);
-          break;
-        default:
-          document.getElementById("resolucionsistema").innerHTML = "<br> SELECCIONA UNA FORMA DE SOLUCION";
-          break;
-      }
-    }
-
-    function matriz() {
-      var arrayInputsa = new Array();
-      var valuesInputs = document.getElementsByClassName('datos'),
-        namesValues = [].map.call(valuesInputs,
-          function(dataInput) {
-            arrayInputsa.push(dataInput.value);
-          });
-      var matrizreala = arraymatrix(arrayInputsa, filas.value);
-      return matrizreala;
-    }
-
-    function matrizb() {
-      var arrayInputsb = new Array();
-      var valuesInputsb = document.getElementsByClassName('datosb'),
-        namesValuesb = [].map.call(valuesInputsb,
-          function(dataInputb) {
-            arrayInputsb.push(dataInputb.value);
-          });
-      var matrizrealb = arraymatrix(arrayInputsb, filas.value);
-      return matrizrealb;
-    }
-
-    function arraymatrix(list, elementsPerSubArray) {
-      var matrix = [],
-        i, k;
-      for (i = 0, k = -1; i < list.length; i++) {
-        if (i % elementsPerSubArray === 0) {
-          k++;
-          matrix[k] = [];
-        }
-        matrix[k].push(list[i]);
-      }
-      return matrix;
-    }
-
-    function jacobi(matrixa, matrixb, tol) {
-      a = matrixa.slice();
-      m = zeros(matrixa);
-      b = matrixb.slice();
-      c = [];
-      for (var i = 0; i < filas.value; i++) {
-        for (var j = 0; j < filas.value; j++) {
-          if (i != j) {
-            m[i][j] = -a[i][j] / a[i][i];
-          }
-        }
-        c.push(b[0][i] / a[i][i]);
-      }
-      console.log(m);
-      nro_ite = 0
-      error = [];
-      x = zeros(matrixb);
-      sw = true;
-
-      while (sw) {
-        x1 = zeros(matrixb);
-        suma = 0;
-
+      function crearsistemas() {
+        document.getElementById("sistema").innerHTML = "";
         for (var i = 0; i < filas.value; i++) {
           for (var j = 0; j < filas.value; j++) {
-            suma = suma + m[i][j] * x[0][j];
+            document.getElementById("sistema").innerHTML += "<input id='" + i + j + "' name='dato[]' class='datos' type='text' placeholder='a " + i + j + "'>";
           }
-          suma = suma + c[i];
-          x1[0][i] = suma;
+          document.getElementById("sistema").innerHTML += "<input id='" + i + "' name='datob[]' class='datosb mx-5' type='text' placeholder='b " + i + "'>";
+          document.getElementById("sistema").innerHTML += "<br>";
+        }
+        document.getElementById("sistema").innerHTML += '<select id="select1" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"">' +
+          '<option selected>Selecccionar el metodo de resolucion</option>' +
+          '<option value="1">JACOBI</option>' +
+          '<option value="2">GAUSS SEIDEL</option>' +
+          '</select> <br>';
+
+        document.getElementById("sistema").innerHTML += "<input id='tole'  type='text' placeholder='Tolerancia'><br>";
+
+        document.getElementById("sistema").innerHTML += '<button class="btn btn-primary mt-3" onclick="solucionarsistemas()">Solucionar Sistema</button>';
+      }
+
+      function solucionarsistemas() {
+        document.getElementById("resolucionsistema").innerHTML = "";
+        const $select = document.querySelector("#select1").value;
+        matrixa = matriz();
+        matrixb = matrizb();
+
+        tol = tole.value;
+
+        switch ($select) {
+          case "1":
+            jacobi(matrixa, matrixb, tol);
+            if (filas.value == 3) {
+              graficar();
+            }
+            break;
+          case "2":
+            seidel(matrixa, matrixb, tol);
+            if (filas.value == 3) {
+              graficar();
+            }
+            break;
+          default:
+            document.getElementById("resolucionsistema").innerHTML = "<br> SELECCIONA UNA FORMA DE SOLUCION";
+            break;
+        }
+      }
+
+      function matriz() {
+        var arrayInputsa = new Array();
+        var valuesInputs = document.getElementsByClassName('datos'),
+          namesValues = [].map.call(valuesInputs,
+            function(dataInput) {
+              arrayInputsa.push(dataInput.value);
+            });
+        var matrizreala = arraymatrix(arrayInputsa, filas.value);
+        return matrizreala;
+      }
+
+      function matrizb() {
+        var arrayInputsb = new Array();
+        var valuesInputsb = document.getElementsByClassName('datosb'),
+          namesValuesb = [].map.call(valuesInputsb,
+            function(dataInputb) {
+              arrayInputsb.push(dataInputb.value);
+            });
+        var matrizrealb = arraymatrix(arrayInputsb, filas.value);
+        return matrizrealb;
+      }
+
+      function arraymatrix(list, elementsPerSubArray) {
+        var matrix = [],
+          i, k;
+        for (i = 0, k = -1; i < list.length; i++) {
+          if (i % elementsPerSubArray === 0) {
+            k++;
+            matrix[k] = [];
+          }
+          matrix[k].push(list[i]);
+        }
+        return matrix;
+      }
+
+      function jacobi(matrixa, matrixb, tol) {
+        a = matrixa.slice();
+        m = zeros(matrixa);
+        b = matrixb.slice();
+        c = [];
+        for (var i = 0; i < filas.value; i++) {
+          for (var j = 0; j < filas.value; j++) {
+            if (i != j) {
+              m[i][j] = -a[i][j] / a[i][i];
+            }
+          }
+          c.push(b[0][i] / a[i][i]);
+        }
+        console.log(m);
+        nro_ite = 0
+        error = [];
+        x = zeros(matrixb);
+        sw = true;
+
+        while (sw) {
+          x1 = zeros(matrixb);
           suma = 0;
-          error[i] = Math.abs(x1[0][i] - x[0][i])
-        }
 
-        max_error = 0;
-        for (var i = 0; i < filas.value; i++) {
-          if (error[i] > max_error) {
-            max_error = error[i];
+          for (var i = 0; i < filas.value; i++) {
+            for (var j = 0; j < filas.value; j++) {
+              suma = suma + m[i][j] * x[0][j];
+            }
+            suma = suma + c[i];
+            x1[0][i] = suma;
+            suma = 0;
+            error[i] = Math.abs(x1[0][i] - x[0][i])
           }
-        }
-        if (max_error < tol) {
-          sw = false;
-        }
-        x = x1.slice();
 
-        document.getElementById("resolucionsistema").innerHTML += nro_ite;
-        for (var i = 0; i < filas.value; i++) {
-          document.getElementById("resolucionsistema").innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbspx" + (i + 1) + ": " + x[0][i];
+          max_error = 0;
+          for (var i = 0; i < filas.value; i++) {
+            if (error[i] > max_error) {
+              max_error = error[i];
+            }
+          }
+          if (max_error < tol) {
+            sw = false;
+          }
+          x = x1.slice();
+
+          document.getElementById("resolucionsistema").innerHTML += nro_ite;
+          for (var i = 0; i < filas.value; i++) {
+            document.getElementById("resolucionsistema").innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbspx" + (i + 1) + ": " + x[0][i];
+          }
+          document.getElementById("resolucionsistema").innerHTML += "<br>";
+          nro_ite = nro_ite + 1;
         }
-        document.getElementById("resolucionsistema").innerHTML += "<br>";
-        nro_ite = nro_ite + 1;
       }
-    }
 
-    const zeros = (input) => {
-      let result = [];
-      input.forEach((row, i) => {
-        result.push([]);
-        row.forEach(col => {
-          result[i].push(0);
+      function seidel(matrixa, matrixb, tol) {
+        a = matrixa.slice();
+        m = zeros(matrixa);
+        b = matrixb.slice();
+        c = [];
+        for (var i = 0; i < filas.value; i++) {
+          for (var j = 0; j < filas.value; j++) {
+            if (i != j) {
+              m[i][j] = -a[i][j] / a[i][i];
+            }
+          }
+          c.push(b[0][i] / a[i][i]);
+        }
+        console.log(m);
+        nro_ite = 0
+        error = [];
+        x = zeros(matrixb);
+        x0 = zeros(matrixb);
+        sw = true;
+
+        while (sw) {
+          x1 = zeros(matrixb);
+          suma = 0;
+
+          for (var i = 0; i < filas.value; i++) {
+            for (var j = 0; j < filas.value; j++) {
+              suma = suma + m[i][j] * x[0][j];
+            }
+            suma = suma + c[i];
+            x1[0][i] = suma;
+            x[0][i] = suma;
+            suma = 0;
+            error[i] = Math.abs(x1[0][i] - x0[0][i])
+          }
+
+          max_error = 0;
+          for (var i = 0; i < filas.value; i++) {
+            if (error[i] > max_error) {
+              max_error = error[i];
+            }
+          }
+          if (max_error < tol) {
+            sw = false;
+          }
+          x0 = x1.slice();
+
+          document.getElementById("resolucionsistema").innerHTML += nro_ite;
+          for (var i = 0; i < filas.value; i++) {
+            document.getElementById("resolucionsistema").innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbspx" + (i + 1) + ": " + x[0][i];
+          }
+          document.getElementById("resolucionsistema").innerHTML += "<br>";
+          nro_ite = nro_ite + 1;
+        }
+      }
+
+      const zeros = (input) => {
+        let result = [];
+        input.forEach((row, i) => {
+          result.push([]);
+          row.forEach(col => {
+            result[i].push(0);
+          });
         });
-      });
-      return result;
-    }
+        return result;
+      }
 
-    function graficar(variabley1, variablez1, variableb1) {
-      var x1 = [],
-        y1 = [];
+      function graficar() {
+        var x1 = [],
+          y1 = [];
 
-      function getrandomx(num) {
-        var value = [];
-        for (i = 0; i <= num; i++) {
-          for (j = 0; j <= num; j++) {
-            value.push(j);
-            x1.push(j);
+        function getrandomx(num) {
+          var value = [];
+          for (i = 0; i <= num; i++) {
+            for (j = 0; j <= num; j++) {
+              value.push(j);
+              x1.push(j);
+            }
           }
+          console.log(x1);
+          return value;
         }
-        console.log(x1);
-        return value;
-      }
 
-      function getrandomy(num) {
-        var value = [];
-        for (i = 0; i <= num; i++) {
-          for (j = 0; j <= num; j++) {
-            value.push(i);
-            y1.push(i);
+        function getrandomy(num) {
+          var value = [];
+          for (i = 0; i <= num; i++) {
+            for (j = 0; j <= num; j++) {
+              value.push(i);
+              y1.push(i);
+            }
           }
+          console.log(y1);
+          return value;
         }
-        console.log(y1);
-        return value;
-      }
 
-      function getrandomz(num) {
-        var value = [];
-        cont = 0;
-        for (i = 0; i <= num * num; i = i + num) {
-          for (j = cont; j <= cont + num; j++) {
-            value.push(variableb1 - (x1[j] * variabley1) + (y1[j] * variablez1));
+        function getrandomz(num) {
+              var value = [ ];
+              cont=0;
+              for ( i=0; i <= num*num; i=i+num ) {
+                  for ( j=cont; j <=cont+num; j++ ) {
+                      value.push((matrixb[0][0] - (matrixa[0][0]*x1[j]) + (matrixa[0][1]*y1[j]))/matrixa[0][2]);
+                  }
+                  cont+=num+1;
+              }
+              console.log("ecuacion1"+value);
+              return value;
           }
-          cont += num + 1;
-        }
-        console.log(value);
-        return value;
-      }
 
-      function getrandomz1(num) {
-        var value = [];
-        cont = 0;
-        for (i = 0; i <= num * num; i = i + num) {
-          for (j = cont; j <= cont + num; j++) {
-            value.push(variableb1 - (x1[j] * 5) - (y1[j] * 4));
+        function getrandomz1(num) {
+              var value = [ ];
+              cont=0;
+              for ( i=0; i <= num*num; i=i+num ) {
+                  for ( j=cont; j <=cont+num; j++ ) {
+                      value.push((matrixb[0][1] - (matrixa[1][0]*x1[j]) + (matrixa[1][1]*y1[j]))/matrixa[1][2]);
+                  }
+                  cont+=num+1;
+              }
+              console.log("ecuacion2"+value);
+              return value;
           }
-          cont += num + 1;
-        }
-        console.log(value);
-        return value;
-      }
 
-      var trace1 = {
-        opacity: 0.5,
-        color: 'grey',
-        type: 'mesh3d',
-        x: getrandomx(50),
-        y: getrandomy(50),
-        z: getrandomz(50),
-        scene: "scene1"
-      };
-
-      var layout = {
-        scene1: {
-          domain: {
-            x: [0.0, 0.5],
-            y: [0.5, 1.0]
-          },
-        },
-        height: 1000,
-        margin: {
-          l: 0,
-          r: 0,
-          b: 0,
-          t: 0,
-          pad: 0
-        },
-      }
-
-      Plotly.newPlot('myDiv', [trace1], layout);
-    }
-
-    function seidel(matrixa, matrixb) {
-      a = matrixa.slice();
-      m = zeros(matrixa);
-      b = matrixb.slice();
-      x = [];
-      for (var i = 0; i < filas.value; i++) {
-        m = b[i];
-        for (var j = 0; j < filas.value; j++) {
-          if (i != j) {
-            m = -a[i][j] * x[i];
+          function getrandomz2(num) {
+              var value = [ ];
+              cont=0;
+              for ( i=0; i <= num*num; i=i+num ) {
+                  for ( j=cont; j <=cont+num; j++ ) {
+                      value.push((matrixb[0][2] - (matrixa[2][0]*x1[j]) + (matrixa[2][1]*y1[j]))/matrixa[2][2]);
+                  }
+                  cont+=num+1;
+              }
+              console.log("ecuacion3"+value);
+              return value;
           }
-        }
-        x[i] = m / a[i][i];
+
+        var trace1 =  {
+              opacity: 0.5,
+              color: 'green',
+              type: 'mesh3d',
+              x: getrandomx(50),
+              y: getrandomy(50),
+              z: getrandomz(50),
+              scene: "scene1"
+              };
+
+          var trace2 =  {
+              opacity: 0.5,
+              color: 'pink',
+              type: 'mesh3d',
+              x: getrandomx(50),
+              y: getrandomy(50),
+              z: getrandomz1(50),
+              scene: "scene2"
+              };
+
+          var trace3 = {
+              opacity: 0.5,
+              color: 'blue',
+              type: 'mesh3d',
+              x: getrandomx(50),
+              y: getrandomy(50),
+              z: getrandomz2(50),
+              scene: "scene3",
+              };
+
+        var layout = {
+              scene1: {
+                  domain: {
+                      x: [0.0,  0.5],
+                      y: [0.5, 1.0]
+                  },},
+              scene2: {
+                  domain: {
+                      x: [0.5, 1],
+                      y: [0.5, 1.0]
+                  },},
+              scene3: {
+                  domain: {
+                      x: [0.0,  0.33],
+                      y: [0, 0.5]
+                  },},
+            weight: 1000,
+            height: 1000,
+            margin: {
+              l: 120,
+              r: 120,
+              b: 0,
+              t: 100,
+              pad: 0
+            },
+            paper_bgcolor:'lightGray',
+          }
+
+        Plotly.newPlot('myDiv', [trace1,trace2,trace3], layout);
       }
-      console.log(x);
-      for (var i = 0; i < filas.value; i++) {
-        x = seidel(a, b, x);
-        console.log(x);
-      }
-    }
 
-  </script>
+    </script>
 
-  <div id="sistema"></div>
-  <div id="resolucionsistema"></div>
-  <div id='myDiv'></div>
+    <div id="sistema"></div>
+    <div id="resolucionsistema"></div>
+    <div id='myDiv'></div>
+    <h1><FONT FACE="courier new"><center><p style="color: honeydew;"> Claudio Andres Sanjines Cuellar </p></center></FONT></h1>
 
-</body>
-
+  </body>
 </html>
